@@ -228,7 +228,7 @@ BlynkPlatform.prototype.getServices = function(homebridgeAccessory) {
 BlynkPlatform.prototype.updateWidget = function(service, characteristic) {
 
 	var pinString = service.controlService.pin;
-
+    var log = this.log;
 	request('https://' + this.server + ':' + this.httpsPort + '/' + this.token + '/get/' + pinString,
 		function (error, response, body) {
             if (response) {
