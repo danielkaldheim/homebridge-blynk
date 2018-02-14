@@ -38,7 +38,7 @@
 
 'use strict';
 
-// TODO: remove when using a full signed certificate 
+// TODO: remove when using a full signed certificate
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var Service, Characteristic;
@@ -49,14 +49,14 @@ const INITIAL_UPDATE_PERIOD = 10000;
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
-  
+
   homebridge.registerPlatform("homebridge-blynk", "Blynk", BlynkPlatform);
 };
 
 function BlynkPlatform(log, config) {
   	this.log          	= log;
   	this.server			= config["server"];
-  	this.httpsPort     		= config["httpsPort"];
+  	this.httpsPort     		= (config["httpsPort"] || 9443);
   	this.BlynkAccessories = config["accessories"];
 	this.token     = config["token"];
 }
@@ -67,7 +67,7 @@ BlynkPlatform.prototype.accessories = function(callback) {
 	var that = this;
 	var foundAccessories = [];
 	if (this.BlynkAccessories == null || this.BlynkAccessories.length == 0) {
-		callback(foundAccessories); 
+		callback(foundAccessories);
 		return;
 	}
 			that.BlynkAccessories.map(function(s) {
@@ -115,7 +115,7 @@ BlynkPlatform.prototype.accessories = function(callback) {
 					foundAccessories.push(accessory);
 				}
 			}
-			
+
 		);
 		  callback(foundAccessories);
 
@@ -132,7 +132,7 @@ BlynkPlatform.prototype.hardwareWrite = function(pinString, value) {
 };
 
 BlynkPlatform.prototype.hardwareRead = function(callback, characteristic, service) {
-		
+
 	var pinString = service.controlService.pin;
 
 	request('https://' + this.server + ':' + this.httpsPort + '/' + this.token + '/get/' + pinString,
@@ -194,12 +194,12 @@ BlynkPlatform.prototype.bindCharacteristicEvents = function(characteristic, serv
 										setTimeout( function(){
 											characteristic.setValue(false, undefined, 'fromSetValue');
 										}, 100 );
-									}		 
+									}
 									break;
 								default:
 									break;
 							}
-						} 
+						}
 						callback();
 				   }.bind(this) );
     characteristic
@@ -226,7 +226,7 @@ BlynkPlatform.prototype.getServices = function(homebridgeAccessory) {
 };
 
 BlynkPlatform.prototype.updateWidget = function(service, characteristic) {
-	
+
 	var pinString = service.controlService.pin;
 
 	request('https://' + this.server + ':' + this.httpsPort + '/' + this.token + '/get/' + pinString,
