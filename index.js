@@ -233,19 +233,22 @@ BlynkPlatform.prototype.updateWidget = function(service, characteristic) {
 		function (error, response, body) {
             if (response) {
                 var retValue = null;
-                console.log('Status:', response.statusCode);
-                console.log('Headers:', JSON.stringify(response.headers));
-                console.log('Response:', body);
+                // console.log('Status:', response.statusCode);
+                // console.log('Headers:', JSON.stringify(response.headers));
+                // console.log('Response:', body);
 
                 switch (service.controlService.widget) {
                     case "Switch":
                         retValue = (body == ["1"]);
+                        this.log("Getting value from switch at pin" + pinString + " [" + retValue + "]");
                         break;
                     case "TemperatureSensor":
                         retValue = parseFloat(JSON.parse(body));
+                        this.log("Getting value from temperature sensor at pin " + pinString + " [" + retValue + "]");
                         break;
                     case "HumiditySensor":
                         retValue = parseFloat(JSON.parse(body));
+                        this.log("Getting value from humidity sensor at pin " + pinString + " [" + retValue + "]");
                         break;
                     default:
                         break;
@@ -253,7 +256,7 @@ BlynkPlatform.prototype.updateWidget = function(service, characteristic) {
 
                 characteristic.setValue(parseFloat(JSON.parse(body)), undefined, 'fromPoller');
             } else {
-                console.log('Error during performing request : ', error);
+                this.log('Error during performing request : ', error);
             }
 		}
 	);
